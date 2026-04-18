@@ -1,5 +1,9 @@
 # 🚀 Sistema de Gestión de Inventario Automatizado (n8n)
 
+<p align="center">
+  <img src="flujo.png" alt="Flujo n8n" width="800px">
+</p>
+
 Este proyecto resuelve la problemática de gestión manual de préstamos de equipos utilizando **n8n** como orquestador.
 
 ## 🛠️ Tecnologías utilizadas

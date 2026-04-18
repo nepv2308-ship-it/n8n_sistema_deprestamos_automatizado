@@ -1,0 +1,648 @@
+{
+  "name": "Proyecto_final",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Solicitud de préstamo de equipo o herramientas",
+        "formDescription": "completa la infromación solictada",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre Completo"
+            },
+            {
+              "fieldLabel": "Correo electrónico",
+              "fieldType": "email",
+              "placeholder": "nie.estudiante@clases.edu.sv"
+            },
+            {
+              "fieldLabel": "Equipo o herramienta solicitado",
+              "placeholder": "escriba el nomre o descripcion del equipo  o herramienta"
+            },
+            {
+              "fieldLabel": "Estado del equipo",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Funcionando perfectamente"
+                  },
+                  {
+                    "option": "Con fallas menores"
+                  },
+                  {
+                    "option": "Dañado"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Fecha de prestamo",
+              "fieldType": "date",
+              "defaultValue": "={{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "fieldLabel": "fecha devolucion",
+              "fieldType": "date"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1056,
+        -272
+      ],
+      "id": "18f60e67-74c6-4e3d-835b-8472aca717ca",
+      "name": "formulario de prestamo",
+      "webhookId": "cb530332-cf34-4e13-9841-1522f7909f23"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc",
+          "mode": "list",
+          "cachedResultName": "Control de prestamos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_préstamo": "={{ $json.id_prestamo }}",
+            "email": "={{ $json['Correo electrónico'] }}",
+            "name": "={{ $json['Nombre Completo'] }}",
+            "nombre_equipo": "={{ $json['Equipo o herramineta solicitado'] }}",
+            "fecha_prestamo": "={{ $json['Fecha de prestamo'] }}",
+            "estado_inicial": "={{ $json['Estado del equipo'] }}",
+            "fecha_devolucion": "={{ $json['fecha devolucion'] }}",
+            "estado_actual": "={{ $json.esatado_actual }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_préstamo",
+              "displayName": "id_préstamo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nombre_equipo",
+              "displayName": "nombre_equipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_inicial",
+              "displayName": "estado_inicial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_prestamo",
+              "displayName": "fecha_prestamo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_devolucion",
+              "displayName": "fecha_devolucion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_actual",
+              "displayName": "estado_actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -608,
+        -272
+      ],
+      "id": "1937c543-da7d-4d78-ab7c-6f1e2a0d7c93",
+      "name": "agregando a la BD",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "E1BSdk3ZfODMicxa",
+          "name": "Google Sheets account 82"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json['Correo electrónico'] }}",
+        "subject": "=Confirmacion de Pretamo- ID{{ $('Edit Fields').item.json.id_prestamo }}",
+        "message": "=<p>Hola <b>{{ $node[\"Edit Fields\"].json[\"Nombre Completo\"] }}</b>,</p>\n\n<p>Te confirmamos que has solicitado el equipo: <b> {{ $('Edit Fields').item.json['Equipo o herramienta solicitado'] }} </b>.</p>\n\n<p>Tu código de préstamo es: <b>{{ $node[\"Edit Fields\"].json[\"id_prestamo\"] }}</b>.</p>\n\n<p><b>Fecha de devolución:</b> {{ $node[\"Edit Fields\"].json[\"fecha devolucion\"] }}</p>\n\n<p>Por favor, presenta este código al momento de la entrega.</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -384,
+        -272
+      ],
+      "id": "71c19993-a867-4bb8-a620-39fb3554aa89",
+      "name": "Notificacion de préstamo",
+      "webhookId": "2c073519-2d20-456d-8702-bcdaf9689e9d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IUOBJmFIyOxEv08k",
+          "name": "Gmail account 46"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Formulario de Devolucion",
+        "formDescription": "Completa la informacion solictada",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "ID del Préstamo"
+            },
+            {
+              "fieldLabel": "Estado de final del equipo/herramienta",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "funcionando perfectamente"
+                  },
+                  {
+                    "option": "Dañado parcialmente"
+                  },
+                  {
+                    "option": "Dañado"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1056,
+        48
+      ],
+      "id": "c0d5c22c-b84d-4da5-a639-f52a64c119dc",
+      "name": "formulario de devolución",
+      "webhookId": "57af6cdb-8171-41f0-9183-3cab96c7839f"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bec4283c-3f00-4521-b238-7893710404f7",
+              "name": "id_prestamo",
+              "value": "={{ $now.format('yyMMdd') }}-{{ Math.floor(Math.random() * 1000) }}",
+              "type": "string"
+            },
+            {
+              "id": "44fcd515-2898-41b5-8c6b-6812bd60cace",
+              "name": "esatado_actual",
+              "value": "PRESTADO",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -832,
+        -272
+      ],
+      "id": "54ecb548-be2a-42c1-9561-f9ba88cb3f14",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc",
+          "mode": "list",
+          "cachedResultName": "Control de prestamos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_préstamo": "={{ $json['id_préstamo'] }}",
+            "estado_inicial": "=",
+            "estado_actual": "DEVUELTO",
+            "esatdo_final": "={{ $json['Estado de final del equipo/herramienta'] }}",
+            "nombre_equipo": "={{ $json.nombre_equipo }}"
+          },
+          "matchingColumns": [
+            "id_préstamo"
+          ],
+          "schema": [
+            {
+              "id": "id_préstamo",
+              "displayName": "id_préstamo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nombre_equipo",
+              "displayName": "nombre_equipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_inicial",
+              "displayName": "estado_inicial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_prestamo",
+              "displayName": "fecha_prestamo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha_devolucion",
+              "displayName": "fecha_devolucion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_actual",
+              "displayName": "estado_actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "esatdo_final",
+              "displayName": "esatdo_final",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -608,
+        48
+      ],
+      "id": "da5f62f2-f7e1-4b58-b0a0-1441e0429788",
+      "name": "Actualizando la BD",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "E1BSdk3ZfODMicxa",
+          "name": "Google Sheets account 82"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3d7d229f-bd56-4531-9a0b-6836d06d5621",
+              "leftValue": "={{ $('formulario de devolución').item.json['Estado de final del equipo/herramienta'] }}",
+              "rightValue": "Dañado",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -384,
+        48
+      ],
+      "id": "0ee8537d-b0cc-47e2-8ba7-7a4dd2e8e121",
+      "name": "Analizando la condicón"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc",
+          "mode": "list",
+          "cachedResultName": "Control de prestamos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z1NEch3Bgc73yDvt11MOa_p-NVOqKkvCSiEYcGVcJuc/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id_préstamo",
+              "lookupValue": "={{ $json['ID del Préstamo'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -832,
+        48
+      ],
+      "id": "a07124bf-14ba-45b2-b0bf-27599f166d35",
+      "name": "Toma de datos",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "E1BSdk3ZfODMicxa",
+          "name": "Google Sheets account 82"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Toma de datos').item.json.email }}",
+        "subject": "NOTIFICACIÓN DE ALERTA!",
+        "message": "=<p><b>Atención:</b> Se ha reportado un daño en la devolución de un equipo.</p>\n<ul>\n  <li><b>Estudiante:</b> {{ $node[\"Toma de datos\"].json[\"name\"] }}</li>\n  <li><b>Equipo:</b> {{ $node[\"Toma de datos\"].json[\"nombre_equipo\"] }}</li>\n  <li><b>ID del Préstamo:</b> {{ $json[\"id_préstamo\"] }}</li>\n  <li><b>Estado reportado:</b> <span style=\"color:red;\">{{ $node[\"formulario de devolución\"].json[\"Estado de final del equipo/herramienta\"] }}</span></li>\n</ul>\n<p>Favor revisar el equipo físicamente y proceder con el ticket de reparación.</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -48
+      ],
+      "id": "51dfce28-b2b5-4a64-9842-aee2ce4977a4",
+      "name": "Notificacion de Alerta!",
+      "webhookId": "57fc8986-764a-47f5-80d6-940e1163818c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IUOBJmFIyOxEv08k",
+          "name": "Gmail account 46"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Toma de datos').item.json.email }}",
+        "subject": "Notificacion de finalizacion",
+        "message": "=<p>Hola <b>{{ $node[\"Toma de datos\"].json[\"name\"] }}</b>,</p>\n<p>Este correo confirma que hemos recibido el equipo: <b>{{ $node[\"Toma de datos\"].json[\"nombre_equipo\"] }}</b>.</p>\n<p>El registro de préstamo con ID <b>{{ $json[\"id_préstamo\"] }}</b> ha sido actualizado correctamente a <b>DEVUELTO</b>.</p>\n<p>¡Muchas gracias por tu responsabilidad!</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        144
+      ],
+      "id": "8ed95586-fb7b-4f10-a2f7-9afa5a756c14",
+      "name": "Finalización exitosa",
+      "webhookId": "57fc8986-764a-47f5-80d6-940e1163818c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IUOBJmFIyOxEv08k",
+          "name": "Gmail account 46"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "formulario de prestamo": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "agregando a la BD": {
+      "main": [
+        [
+          {
+            "node": "Notificacion de préstamo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formulario de devolución": {
+      "main": [
+        [
+          {
+            "node": "Toma de datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "agregando a la BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizando la BD": {
+      "main": [
+        [
+          {
+            "node": "Analizando la condicón",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizando la condicón": {
+      "main": [
+        [
+          {
+            "node": "Notificacion de Alerta!",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finalización exitosa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Toma de datos": {
+      "main": [
+        [
+          {
+            "node": "Actualizando la BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "b33b64c2-7f78-4858-96a7-c5e5ee73fb4a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "470de8576529a9644f4a8141df49435772709f5596f4857efd7cc0dd109b53c5"
+  },
+  "id": "WcuNsUUFbM5fFlfNgVnjh",
+  "tags": []
+}
